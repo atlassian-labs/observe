@@ -1,0 +1,6 @@
+pytest
+pytest-cov
+autopep8
+isort
+flake8
+pylint

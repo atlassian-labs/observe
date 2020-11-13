@@ -1,7 +1,6 @@
 VENV_DIR = .ve
 VENV_RUN = . $(VENV_DIR)/bin/activate
 
-
 install:
 	./bin/install.sh
 

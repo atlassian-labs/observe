@@ -106,7 +106,7 @@ Contributions to **@observe** are welcome! Please see [CONTRIBUTING.md](CONTRIBU
 ## License
 
 Copyright (c) [2020] Atlassian and others.
-Apache 2.0 licensed, see [LICENSE](LICENSE) file.
+Apache 2.0 licensed, see [LICENSE](LICENCE) file.
 
 <br/>
 

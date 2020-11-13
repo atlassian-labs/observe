@@ -7,6 +7,7 @@ __pycache__/
 .idea/
 .nebulae/
 .ve/
+.vscode
 *.data.cache
 *.egg-info/
 *.log
@@ -19,6 +20,4 @@ dist/
 env.json
 MANIFEST
 node_modules/
-src/.DS_Store
-src/lib/.DS_Store
 test-reports/

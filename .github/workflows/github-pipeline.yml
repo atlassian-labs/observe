@@ -7,8 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.x']
-
+        python-version: ['3']
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -21,5 +20,8 @@ jobs:
       uses: ./.github/actions/lint
     - name: Unit Test
       uses: ./.github/actions/unit-test
-    - name: Upload coverage to Codecov
+    - name: Upload Coverage (codecov.io)
       uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
+        verbose: true

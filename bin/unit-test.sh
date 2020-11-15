@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. .ve/bin/activate
+source .ve/bin/activate
 
 export PYTHONPATH="${PYTHONPATH}:`pwd`/observe"
 

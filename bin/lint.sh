@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-. .ve/bin/activate
+source .ve/bin/activate
 
 
 if ! flake8 "./observe" "./test"; then

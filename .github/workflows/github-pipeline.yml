@@ -7,14 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3]
+        python-version: ['3.x']
 
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
-          python-version: ${{ matrix.python-version }}
-    - uses: ./.github/actions/install
-    - uses: ./.github/actions/lint
-    - uses: ./.github/actions/unit-test
+        python-version: ${{ matrix.python-version }}
+    - name: Install
+      uses: ./.github/actions/install
+    - name: Lint
+      uses: ./.github/actions/lint
+    - name: Unit Test
+      uses: ./.github/actions/unit-test

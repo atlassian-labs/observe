@@ -2,7 +2,7 @@ __pycache__
 __pycache__/
 .cache/
 .coverage
-.coverage
+coverage.xml
 .DS_Store
 .idea/
 .nebulae/

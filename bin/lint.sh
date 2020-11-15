@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+source .ve/bin/activate
+
+
 if ! flake8 "./observe" "./test"; then
     fail=$(($fail + 1))
 fi

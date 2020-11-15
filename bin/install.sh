@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
+set -e
+
 if [[ ! -d .ve ]]; then
   python -m venv .ve --prompt="(observe)"
 fi
+
+source .ve/bin/activate
 
 pip install --upgrade pip
 pip install -r requirements.txt

@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
+
+source .ve/bin/activate
+
 export PYTHONPATH="${PYTHONPATH}:`pwd`/observe"
 
 if [ -z "$1" ]; then
-    path="test/unit_tests/"
+    path="test/unit/"
 else
     path="$1"
 fi

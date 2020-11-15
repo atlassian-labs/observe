@@ -1,4 +1,4 @@
-name: ObserveCI
+name: Build
 
 on: [push]
 

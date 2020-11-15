@@ -19,5 +19,5 @@ jobs:
       run: ./bin/install.sh
     - name: 'Linting'
       run: ./bin/lint.sh
-    - name: 'Unit Tests'
-      run: ./bin/unit-test.sh
+    - name: 'Unit Test'
+      uses: ./.github/actions/unit-test

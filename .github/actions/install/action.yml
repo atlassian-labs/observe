@@ -1,0 +1,8 @@
+name: Install
+description: Install packages for this project
+
+runs:
+  using: "composite"
+  steps:
+    - run: ./bin/install.sh
+      shell: bash

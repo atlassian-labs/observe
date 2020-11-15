@@ -15,9 +15,6 @@ jobs:
       uses: actions/setup-python@v2
       with:
           python-version: ${{ matrix.python-version }}
-    - name: 'Setup Project Dependencies'
-      run: ./bin/install.sh
-    - name: 'Linting'
-      run: ./bin/lint.sh
-    - name: 'Unit Test'
-      uses: ./.github/actions/unit-test
+    - uses: ./.github/actions/install
+    - uses: ./.github/actions/lint
+    - uses: ./.github/actions/unit-test

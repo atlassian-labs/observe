@@ -1,0 +1,8 @@
+name: Lint
+description: Runs linter for this project
+
+runs:
+  using: "composite"
+  steps:
+    - run: ./bin/lint.sh
+      shell: bash

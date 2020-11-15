@@ -1,6 +1,8 @@
 # Observe
 
-[![Atlassian license](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square)](LICENSE) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
+[![Atlassian license](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=flat-square)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
+![Build](https://github.com/atlassian-labs/observe/workflows/Build/badge.svg)
 
 **@observe** is a decorator for Python methods, which allows Python developers to collect all basic metrics about the decorated method, generate unified logs and notifications on failure which are easy to trace.
 

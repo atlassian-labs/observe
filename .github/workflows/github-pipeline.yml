@@ -1,4 +1,4 @@
-name: Python package
+name: Build
 
 on: [push]
 
@@ -7,17 +7,21 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3]
-
+        python-version: ['3']
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
-          python-version: ${{ matrix.python-version }}
-    - name: 'Setup Project Dependencies'
-      run: ./bin/install.sh
-    - name: 'Linting'
-      run: ./bin/lint.sh
-    - name: 'Unit Tests'
-      run: ./bin/unit-test.sh
+        python-version: ${{ matrix.python-version }}
+    - name: Install
+      uses: ./.github/actions/install
+    - name: Lint
+      uses: ./.github/actions/lint
+    - name: Unit Test
+      uses: ./.github/actions/unit-test
+    - name: Upload Coverage (codecov.io)
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./coverage.xml
+        verbose: true

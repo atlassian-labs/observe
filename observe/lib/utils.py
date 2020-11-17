@@ -7,14 +7,14 @@ from observe.lib.logger import Logger
 
 
 class Provider:
-    """The Provider class defines methods to find a client or default to one.
+    """The Provider defines methods to find a client or default to one.
     """
     @staticmethod
     def get_logger(*args: Tuple) -> logging.Logger:
         """Searches the parameter list *args for an instance of logging.Logger.
 
         Returns:
-            logging.Logger: [description]
+            logging.Logger
         """
         for arg in args:
             if isinstance(arg, logging.Logger):

@@ -1,4 +1,4 @@
-"""[summary]
+"""This module defines a basic logging.Logger
 """
 import logging
 import os
@@ -7,15 +7,12 @@ from logging import Logger as L
 
 
 class Logger(L):
-    """[summary]
-    Args:
-        Logger ([type]): [description]
+    """The Logger is a wrap around logging.Logger with a basic setup.
     """
-
     def __init__(self, name: str) -> None:
-        """[summary]
-        Args:
-            name (str): [description]
+        """Initializes the Logger.
+
+        Note: reads from os to determine LOG_LEVEL
         """
         super().__init__(name=name)
         self.setLevel(os.environ.get("LOG_LEVEL", logging.INFO))

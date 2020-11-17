@@ -1,4 +1,4 @@
-"""Defines basic tests where the assertion is provided by no exception being raised.
+"""Defines tests for the @observe decorator.
 """
 from unittest import TestCase
 

@@ -1,3 +1,5 @@
+"""Defines tests for utils.Provider class
+"""
 import logging
 from logging import Logger
 from unittest import TestCase
@@ -7,6 +9,8 @@ from observe.lib.utils import Provider
 
 
 class TestProviderGetLogger(TestCase):
+    """Defines tests for the Provider.get_logger staticmethod
+    """
 
     def test_when_args_are_falsy(self):
         # arrange, act

@@ -10,10 +10,12 @@ categorized into one of the following four categories:
 from functools import wraps
 from typing import Dict, List
 
+from observe.lib.utils import Provider
+
 
 def observe(metric: str,
-            accept_on: List[Exception] = None,
-            decline_on: List[Exception] = None,
+            accept_on: List[Exception] = [],
+            decline_on: List[Exception] = [],
             static_tags: List[str] = None,
             tags_from: Dict[str, List[str]] = None,
             trace_id_from: Dict[str, str] = None,
@@ -29,23 +31,31 @@ def observe(metric: str,
         trace_id_from (Dict[str, str], optional): [description]. Defaults to None.
         verbose (bool, optional): [description]. Defaults to False.
     """
-
-    def cet(f):
-        @wraps(f)
+    def cet(func):
+        @wraps(func)
         def g(*args, **kwargs):
+
+            identity = None
+
             try:
-                response = f(*args, **kwargs)
+                response = func(*args, **kwargs)
 
             except Exception as ex:
 
                 # accept on, returns True
                 if type(ex) in accept_on:
+                    text = f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' accepted."
+                    Provider.get_logger(*args).warning(text)
                     return True
 
                 # decline on, returns False
                 if type(ex) in decline_on:
+                    text = f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' declined."
+                    Provider.get_logger(*args).error(text)
                     return False
 
+                text = f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' raised."
+                Provider.get_logger(*args).error(text)
                 # unhandled exception
                 raise ex
 

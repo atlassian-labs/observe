@@ -9,6 +9,7 @@ from logging import Logger as L
 class Logger(L):
     """The Logger is a wrap around logging.Logger with a basic setup.
     """
+
     def __init__(self, name: str) -> None:
         """Initializes the Logger.
 

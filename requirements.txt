@@ -4,3 +4,6 @@ autopep8
 isort
 flake8
 pylint
+mock
+
+requests

@@ -9,7 +9,7 @@ from observe.lib.utils import Provider
 
 
 class TestProviderGetLogger(TestCase):
-    """Defines tests for the Provider.get_logger staticmethod
+    """Defines tests for the Provider.get_logger staticmethod.
     """
 
     def test_when_args_are_falsy(self):

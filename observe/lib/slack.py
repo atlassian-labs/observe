@@ -1,8 +1,6 @@
 """This module defines a basic colorcoded slack client, following a default Logger approach.
-
 To setup your slack app, and get a webhook see:
 - https://api.slack.com/messaging/webhooks
-
 Ensure to add the slack web hook to the environment as "SLACK_WEB_HOOK"
 """
 
@@ -25,13 +23,12 @@ class Slack:
 
     def __init__(self, web_hook: str = None) -> None:
         """Initializes the Slack client.
-
         Args:
             web_hook (str, optional): the slack web hook to be used for notifications. Defaults to None.
         """
         self.web_hook = web_hook or os.environ.get("SLACK_WEB_HOOK", None)
         if not self.web_hook:
-            raise MissingSlackWebhookException("Failed to determine the slack web hook, please inject or add to os.environ as 'SLACK_WEB_HOOK'.")
+            raise MissingSlackWebhookException("Failed to determine the slack web hook, please inject or add to os.environ as 'SLACK_WEB_HOOK'.\nsee: https://api.slack.com/messaging/webhooks")
 
         self.footer = "app_name=%s" % os.environ.get("APP_NAME", "@observe")
 

@@ -31,7 +31,7 @@ class Slack:
         """
         self.web_hook = web_hook or os.environ.get("SLACK_WEB_HOOK", None)
         if not self.web_hook:
-            raise MissingSlackWebhookException("Failed to determine the slack web hook, please inject or add to os.environ as 'SLACK_WEB_HOOK'.\nsee: https://api.slack.com/messaging/webhooks")
+            raise MissingSlackWebhookException("Failed to determine the slack web hook, please inject or add to os.environ as 'SLACK_WEB_HOOK'.")
 
         self.footer = "app_name=%s" % os.environ.get("APP_NAME", "@observe")
 

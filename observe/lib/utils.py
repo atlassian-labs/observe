@@ -4,7 +4,6 @@ import logging
 from typing import Tuple
 
 from observe.lib.logger import Logger
-from observe.lib.slack import MissingSlackWebhookException, Slack
 
 
 class Provider:
@@ -24,21 +23,3 @@ class Provider:
                 return arg.logger
 
         return Logger(name="Observe")
-
-    @staticmethod
-    def get_slack(*args: Tuple) -> Slack:
-        """Searches the parameter list *args for an instance of Slack.
-
-        Returns:
-            Slack
-        """
-        for arg in args:
-            if isinstance(arg, Slack):
-                return arg
-            if hasattr(arg, "slack") and isinstance(arg.slack, Slack):
-                return arg.slack
-
-        try:
-            return Slack()
-        except MissingSlackWebhookException:
-            Provider.get_logger().info("@observe: slack is disabled, add 'SLACK_WEB_HOOK' to os.environ in order to use.")

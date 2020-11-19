@@ -2,6 +2,8 @@
 """
 from unittest import TestCase
 
+from mock import Mock, patch
+
 from observe.decorator import observe
 
 
@@ -50,6 +52,9 @@ class TestDecoratorExceptions(TestCase):
         """If raised, message should not be acknowledged, notify also.
         """
 
+    def setUp(self) -> None:
+        self.env_with_slack = patch.dict('os.environ', {'SLACK_WEB_HOOK': 'https://hooks.slack.com/services/top_secret_1'})
+
     def test_function_accepts_on(self):
         # arrange, @observe function which raises to accept
         @observe(metric="your_metric", accept_on=[TestDecoratorExceptions.AcceptOnException])
@@ -92,19 +97,28 @@ class TestDecoratorExceptions(TestCase):
         # assert
         self.assertEqual(response, False)
 
-    def test_function_raises(self):
+    @patch("observe.lib.slack.requests")
+    def test_function_raises(self, requests):
+        # arrange patch
+        requests.return_value = Mock(status_code=200)
         # arrange, @observe function which raises to accept
+
         @observe(metric="your_metric")
         def process() -> None:
             raise TestDecoratorExceptions.CustomException("... uhuh don't acknowledge me ...")
         # act
         self.assertRaises(TestDecoratorExceptions.CustomException, process)
 
-    def test_method_raises(self):
+    @patch("observe.lib.slack.requests")
+    def test_method_raises(self, requests):
+        # arrange patch
+        requests.return_value = Mock(status_code=200)
         # arrange, @observe function which raises to accept
+
         class A:
             @observe(metric="your_metric")
             def process(self) -> None:
                 raise TestDecoratorExceptions.CustomException("... uhuh don't acknowledge me ...")
         # act
-        self.assertRaises(TestDecoratorExceptions.CustomException, A().process)
+        with self.env_with_slack:
+            self.assertRaises(TestDecoratorExceptions.CustomException, A().process)

@@ -7,7 +7,6 @@ categorized into one of the following four categories:
     * c. raised an expected exception, NOT to be acknowledged, see decline_on[] -> return False
     * d. raised an unexpected exception, -> re-raise
 """
-import traceback
 from functools import wraps
 from typing import Dict, List
 
@@ -45,19 +44,19 @@ def observe(metric: str,
 
                 # accept on, returns True
                 if type(ex) in accept_on:
-                    Provider.get_logger(*args).warning(f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' accepted.\n{traceback.format_exc()}")
+                    text = f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' accepted."
+                    Provider.get_logger(*args).warning(text)
                     return True
 
                 # decline on, returns False
                 if type(ex) in decline_on:
-                    Provider.get_logger(*args).error(f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' declined.\n{traceback.format_exc()}")
+                    text = f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' declined."
+                    Provider.get_logger(*args).error(text)
                     return False
 
+                text = f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' raised."
+                Provider.get_logger(*args).error(text)
                 # unhandled exception
-                Provider.get_logger(*args).error(f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' raised.\n{traceback.format_exc()}")
-                slack = Provider.get_slack(*args)
-                if slack:
-                    slack.error(header=identity, title=type(ex).__name__, text=f"{ex}\n{traceback.format_exc()}")
                 raise ex
 
             finally:

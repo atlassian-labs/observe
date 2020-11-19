@@ -1,5 +1,4 @@
 """Implements the observe decorator to standardize logging, metrics and notifications at the event level.
-
 The provided metrics, logs and notifications are created based on the basic idea that each function call can be
 categorized into one of the following four categories:
     * a. successful -> return response
@@ -7,6 +6,7 @@ categorized into one of the following four categories:
     * c. raised an expected exception, NOT to be acknowledged, see decline_on[] -> return False
     * d. raised an unexpected exception, -> re-raise
 """
+import traceback
 from functools import wraps
 from typing import Dict, List
 
@@ -21,7 +21,6 @@ def observe(metric: str,
             trace_id_from: Dict[str, str] = None,
             verbose: bool = False):
     """[summary]
-
     Args:
         metric (str): [description]
         accept_on (List[Exception], optional): [description]. Defaults to None.
@@ -44,19 +43,19 @@ def observe(metric: str,
 
                 # accept on, returns True
                 if type(ex) in accept_on:
-                    text = f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' accepted."
-                    Provider.get_logger(*args).warning(text)
+                    Provider.get_logger(*args).warning(f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' accepted.\n{traceback.format_exc()}")
                     return True
 
                 # decline on, returns False
                 if type(ex) in decline_on:
-                    text = f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' declined."
-                    Provider.get_logger(*args).error(text)
+                    Provider.get_logger(*args).error(f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' declined.\n{traceback.format_exc()}")
                     return False
 
-                text = f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' raised."
-                Provider.get_logger(*args).error(text)
                 # unhandled exception
+                Provider.get_logger(*args).error(f"{identity}: {type(ex).__name__}({ex}) during '{func.__name__}' raised.\n{traceback.format_exc()}")
+                slack = Provider.get_slack(*args)
+                if slack:
+                    slack.error(header=identity, title=type(ex).__name__, text=f"{ex}\n{traceback.format_exc()}")
                 raise ex
 
             finally:

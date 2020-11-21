@@ -23,8 +23,12 @@ class Slack:
 
     def __init__(self, web_hook: str = None) -> None:
         """Initializes the Slack client.
+
         Args:
             web_hook (str, optional): the slack web hook to be used for notifications. Defaults to None.
+
+        Raises:
+            MissingSlackWebhookException
         """
         self.web_hook = web_hook or os.environ.get("SLACK_WEB_HOOK", None)
         if not self.web_hook:

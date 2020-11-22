@@ -4,9 +4,11 @@ import logging
 from logging import Logger
 from unittest import TestCase
 
+from datadog.dogstatsd.base import DogStatsd
 from mock import patch
 
 from observe.lib.logger import Logger as CustomLogger
+from observe.lib.metrics import IMetric, Metric
 from observe.lib.slack import Slack
 from observe.lib.utils import Provider
 
@@ -102,3 +104,52 @@ class TestProviderGetSlack(TestCase):
         slack = Provider.get_slack()
         # assert
         self.assertIsNone(slack)
+
+
+class TestProviderGetMetric(TestCase):
+
+    def test_when_args_are_falsy(self):
+
+        metric = Provider.get_metric(None, object, {}, [])
+        # assert
+        self.assertIsInstance(metric, IMetric)
+        self.assertIsInstance(metric, Metric)
+        self.assertEqual(metric.host, "localhost")
+
+    def test_when_args_have_metric(self):
+        # arrange, act
+        metric = Provider.get_metric(Metric(host="custom_metric"))
+        # assert
+        self.assertIsInstance(metric, IMetric)
+        self.assertIsInstance(metric, Metric)
+        self.assertEqual(metric.host, "custom_metric")
+
+    def test_when_args_have_dogstatsd(self):
+        # arrange, act
+        metric = Provider.get_metric(DogStatsd(host="custom_dog"))
+        # assert
+        self.assertIsInstance(metric, DogStatsd)
+        self.assertEqual(metric.host, "custom_dog")
+
+    def test_when_args_is_class_with_metric(self):
+        # arrange
+        class A:
+            def __init__(self):
+                self.metric = Metric(host="custom_metric_in_class")
+        # act
+        metric = Provider.get_metric(A())
+        # assert
+        self.assertIsInstance(metric, IMetric)
+        self.assertIsInstance(metric, Metric)
+        self.assertEqual(metric.host, "custom_metric_in_class")
+
+    def test_when_args_is_class_with_dogstatsd(self):
+        # arrange
+        class A:
+            def __init__(self):
+                self.statsd = DogStatsd(host="custom_dog_in_class")
+        # act
+        metric = Provider.get_metric(A())
+        # assert
+        self.assertIsInstance(metric, DogStatsd)
+        self.assertEqual(metric.host, "custom_dog_in_class")

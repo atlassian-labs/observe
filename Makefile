@@ -15,3 +15,12 @@ format:
 
 lint:
 	($(VENV_RUN); ./bin/lint.sh)
+
+compile:
+	python -m venv .ve --prompt="(compile)"
+	($(VENV_RUN); pip install --upgrade setuptools)
+	($(VENV_RUN); pip install --upgrade wheel)
+	($(VENV_RUN); pip install --upgrade pip-compile-multi)
+	($(VENV_RUN); pip install --upgrade pip-tools)
+	# will look for requirements/requirements.in file to compile packages (.txt)
+	($(VENV_RUN); pip-compile-multi)

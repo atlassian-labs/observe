@@ -47,7 +47,7 @@ class Provider:
             Provider.get_logger().info("@observe: slack is disabled, add 'SLACK_WEB_HOOK' to os.environ in order to use.")
 
     @staticmethod
-    def get_metric(*args: Tuple[Any]) -> Union[IMetric, DogStatsd]:
+    def get_metric(*args: Tuple[Any]) -> Union[IMetric, DogStatsd]:  # pylint: disable=E1136
         """Searches the parameter list *args for an instance of IMetric or DogStatsd
 
         Returns:

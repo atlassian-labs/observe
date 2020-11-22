@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [[ ! -d .ve ]]; then
+  python -m venv .ve --prompt="(observe)"
+fi
+
 source .ve/bin/activate
 
 export PYTHONPATH="${PYTHONPATH}:`pwd`/observe"

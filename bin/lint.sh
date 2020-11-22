@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-source .ve/bin/activate
+if [[ ! -d .ve ]]; then
+  python -m venv .ve --prompt="(observe)"
+fi
 
+source .ve/bin/activate
 
 if ! flake8 "./observe" "./test"; then
     fail=$(($fail + 1))

@@ -9,4 +9,6 @@ fi
 source .ve/bin/activate
 
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install --upgrade pip-tools
+
+pip-sync requirements/requirements.txt

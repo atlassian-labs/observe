@@ -13,8 +13,8 @@ class IMetric:
             self,
             metric: Text,
             value: float,
-            tags: Optional[List[str]] = None,
-            sample_rate: Optional[float] = None) -> Any:
+            tags: Optional[List[str]] = None,  # pylint: disable=E1136
+            sample_rate: Optional[float] = None) -> Any:  # pylint: disable=E1136
         """Record the timing value for the metric, appends tags.
         """
         raise NotImplementedError("%s: the method is not implemented." % self.__class__.__name__)
@@ -23,8 +23,8 @@ class IMetric:
             self,
             metric: Text,
             value: float = 1,
-            tags: Optional[List[str]] = None,
-            sample_rate: Optional[float] = None) -> Any:
+            tags: Optional[List[str]] = None,  # pylint: disable=E1136
+            sample_rate: Optional[float] = None) -> Any:  # pylint: disable=E1136
         """Increment the metric by the provided value, appends tags.
         """
         raise NotImplementedError("%s: the method is not implemented." % self.__class__.__name__)

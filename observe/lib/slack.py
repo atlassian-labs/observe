@@ -21,7 +21,7 @@ class Slack:
     """This class implements a default Slack client used by @observe decorator.
     """
 
-    def __init__(self, web_hook: Optional[str] = None) -> None:
+    def __init__(self, web_hook: Optional[str] = None) -> None:  # pylint: disable=E1136
         """Initializes the Slack client.
 
         Args:
@@ -36,26 +36,26 @@ class Slack:
         self.web_hook: str = _web_hook
         self.footer = "app_name=%s" % os.environ.get("APP_NAME", "@observe")
 
-    def info(self, text: str, header: Optional[str] = None, title: Optional[str] = None) -> requests.Response:
+    def info(self, text: str, header: Optional[str] = None, title: Optional[str] = None) -> requests.Response:  # pylint: disable=E1136
         """Creates a colorcoded and formatted info message and pushes it to slack.
         """
         message = self._parse(header=header, title=title, text=text, color="#00BFFF")
         return self._post(payload=message)
 
-    def warning(self, text: str, header: Optional[str] = None, title: Optional[str] = None) -> requests.Response:
+    def warning(self, text: str, header: Optional[str] = None, title: Optional[str] = None) -> requests.Response:  # pylint: disable=E1136
         """Creates a colorcoded and formatted warning message and pushes it to slack.
         """
         message = self._parse(header=header, title=title, text=text, color="#FFD700")
         return self._post(payload=message)
 
-    def error(self, text: str, header: Optional[str] = None, title: Optional[str] = None) -> requests.Response:
+    def error(self, text: str, header: Optional[str] = None, title: Optional[str] = None) -> requests.Response:  # pylint: disable=E1136
         """Creates a colorcoded and formatted error message and pushes it to slack.
         """
         message = self._parse(header=header, title=title, text=text, color="#FF4500")
         return self._post(payload=message)
 
     def _parse(
-            self, text: str, color: str, header: Optional[str] = None, title: Optional[str] = None
+            self, text: str, color: str, header: Optional[str] = None, title: Optional[str] = None  # pylint: disable=E1136
     ) -> Dict[str, List[Dict[str, Any]]]:
         """Translates the incoming arguments to a slack defined format.
         """

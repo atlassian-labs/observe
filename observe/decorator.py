@@ -15,11 +15,11 @@ from observe.lib.utils import Provider
 
 
 def observe(metric: str,
-            accept_on: Optional[List[Exception]] = None,
-            decline_on: Optional[List[Exception]] = None,
-            static_tags: Optional[List[str]] = None,
-            tags_from: Optional[Dict[str, List[str]]] = None,
-            trace_id_from: Optional[Dict[str, str]] = None,
+            accept_on: Optional[List[Exception]] = None,  # pylint: disable=E1136
+            decline_on: Optional[List[Exception]] = None,  # pylint: disable=E1136
+            static_tags: Optional[List[str]] = None,  # pylint: disable=E1136
+            tags_from: Optional[Dict[str, List[str]]] = None,  # pylint: disable=E1136
+            trace_id_from: Optional[Dict[str, str]] = None,  # pylint: disable=E1136
             verbose: bool = False):
     """[summary]
 
@@ -41,7 +41,7 @@ def observe(metric: str,
         @wraps(func)
         def inner(*args: Any, **kwargs: Any) -> Any:
             # setup
-            identity: Optional[str] = None
+            identity: Optional[str] = None  # pylint: disable=E1136
             all_tags: List[str] = []
 
             imetric = Provider.get_metric(*args)

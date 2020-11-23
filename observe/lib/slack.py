@@ -7,7 +7,7 @@ Ensure to add the slack web hook to the environment as "SLACK_WEB_HOOK"
 import json
 import os
 import time
-from typing import Dict
+from typing import Any, Dict, List, Optional
 
 import requests
 
@@ -21,7 +21,7 @@ class Slack:
     """This class implements a default Slack client used by @observe decorator.
     """
 
-    def __init__(self, web_hook: str = None) -> None:
+    def __init__(self, web_hook: Optional[str] = None) -> None:
         """Initializes the Slack client.
 
         Args:
@@ -30,31 +30,33 @@ class Slack:
         Raises:
             MissingSlackWebhookException
         """
-        self.web_hook = web_hook or os.environ.get("SLACK_WEB_HOOK", None)
-        if not self.web_hook:
+        _web_hook = web_hook or os.environ.get("SLACK_WEB_HOOK")
+        if not _web_hook:
             raise MissingSlackWebhookException("Failed to determine the slack web hook, please inject or add to os.environ as 'SLACK_WEB_HOOK'.\nsee: https://api.slack.com/messaging/webhooks")
-
+        self.web_hook: str = _web_hook
         self.footer = "app_name=%s" % os.environ.get("APP_NAME", "@observe")
 
-    def info(self, text: str, header: str = None, title: str = None) -> requests.Request:
+    def info(self, text: str, header: Optional[str] = None, title: Optional[str] = None) -> requests.Response:
         """Creates a colorcoded and formatted info message and pushes it to slack.
         """
         message = self._parse(header=header, title=title, text=text, color="#00BFFF")
         return self._post(payload=message)
 
-    def warning(self, text: str, header: str = None, title: str = None) -> requests.Request:
+    def warning(self, text: str, header: Optional[str] = None, title: Optional[str] = None) -> requests.Response:
         """Creates a colorcoded and formatted warning message and pushes it to slack.
         """
         message = self._parse(header=header, title=title, text=text, color="#FFD700")
         return self._post(payload=message)
 
-    def error(self, text: str, header: str = None, title: str = None) -> requests.Request:
+    def error(self, text: str, header: Optional[str] = None, title: Optional[str] = None) -> requests.Response:
         """Creates a colorcoded and formatted error message and pushes it to slack.
         """
         message = self._parse(header=header, title=title, text=text, color="#FF4500")
         return self._post(payload=message)
 
-    def _parse(self, header: str, title: str, text: str, color: str) -> Dict:
+    def _parse(
+            self, text: str, color: str, header: Optional[str] = None, title: Optional[str] = None
+    ) -> Dict[str, List[Dict[str, Any]]]:
         """Translates the incoming arguments to a slack defined format.
         """
         return {
@@ -68,7 +70,7 @@ class Slack:
             }]
         }
 
-    def _post(self, payload: Dict) -> requests.Request:
+    def _post(self, payload: Dict[str, Any]) -> requests.Response:
         """Posts the payload to the provided SLACK_WEB_HOOK.
         """
         kwargs = {

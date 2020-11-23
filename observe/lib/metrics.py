@@ -1,6 +1,6 @@
 """This module defines an example of a custom IMetric implementation.
 """
-from typing import List, Optional, Text
+from typing import Any, List, Optional, Text
 
 from datadog import DogStatsd
 
@@ -14,7 +14,7 @@ class IMetric:
             metric: Text,
             value: float,
             tags: Optional[List[str]] = None,
-            sample_rate: Optional[float] = None):
+            sample_rate: Optional[float] = None) -> Any:
         """Record the timing value for the metric, appends tags.
         """
         raise NotImplementedError("%s: the method is not implemented." % self.__class__.__name__)
@@ -24,7 +24,7 @@ class IMetric:
             metric: Text,
             value: float = 1,
             tags: Optional[List[str]] = None,
-            sample_rate: Optional[float] = None):
+            sample_rate: Optional[float] = None) -> Any:
         """Increment the metric by the provided value, appends tags.
         """
         raise NotImplementedError("%s: the method is not implemented." % self.__class__.__name__)
@@ -41,7 +41,7 @@ class Metric(DogStatsd, IMetric):
         IMetric (interface): this is the interface class provided by @observe for users who don't want to use DogStatsd
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any):
         """Initializes the Metric client.
         """
         super(Metric, self).__init__(**kwargs)

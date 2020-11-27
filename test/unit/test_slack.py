@@ -48,9 +48,9 @@ class TestSlackNotification(TestCase):
         # arrange slack using os
         slack = Slack()
         # act
-        slack.info("HelloWorld!")
-        slack.warning("HelloWorld!")
-        slack.error("HelloWorld!")
+        slack.info("This is coming from https://github.com/atlassian-labs/observe build!")
+        slack.warning("This is coming from https://github.com/atlassian-labs/observe build!")
+        slack.error("This is coming from https://github.com/atlassian-labs/observe build!")
         # assert, assertion provided by no exception
 
     @slack_web_hook_required

@@ -67,7 +67,7 @@ class Provider:
 class Resolver:
 
     @staticmethod
-    def resolve_tags_from(tags_from: Optional[Dict[str, List[str]]], **kwargs: Any) -> List[str]:
+    def resolve_tags_from(tags_from: Optional[Dict[str, List[str]]], **kwargs: Any) -> List[str]:  # pylint: disable=E1136
 
         # initialize default empty list
         tags: List[str] = []

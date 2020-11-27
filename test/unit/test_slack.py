@@ -58,7 +58,7 @@ class TestSlackNotification(TestCase):
         # arrange slack using os
         slack = Slack()
         # act
-        slack.info(header="This is the header", title="This is the title", text="HelloWorld!")
-        slack.warning(header="This is the header", title="This is the title", text="HelloWorld!")
-        slack.error(header="This is the header", title="This is the title", text="HelloWorld!")
+        slack.info(header="This is the header", title="This is the title", text="This is coming from https://github.com/atlassian-labs/observe build!")
+        slack.warning(header="This is the header", title="This is the title", text="This is coming from https://github.com/atlassian-labs/observe build!")
+        slack.error(header="This is the header", title="This is the title", text="This is coming from https://github.com/atlassian-labs/observe build!")
         # assert, assertion provided by no exception

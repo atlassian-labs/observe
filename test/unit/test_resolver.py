@@ -94,6 +94,18 @@ class TestResolverTagsFromEmpty(TestCase):
         # assert
         self.assertEqual(tags, [])
 
+    def test_tags_from_returns_empty_list_on_tag_value_not_string(self):
+        # arrange kwargs
+        my_kwargs = {
+            "message": {
+                "type": 1234
+            }
+        }
+        # act
+        tags = Resolver.resolve_tags_from(tags_from={"message": ["type"]}, **my_kwargs)
+        # assert
+        self.assertEqual(tags, [])
+
 
 class TestResolverTagsFromFound(TestCase):
     """Defines tests for the Resolver.resolve_tags_from staticmethod, where tags were resolved

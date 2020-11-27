@@ -1,10 +1,13 @@
 """Defines tests for the @observe decorator.
 """
+from typing import Any, Dict
 from unittest import TestCase
 
 from mock import Mock, patch
 
 from observe.decorator import observe
+from observe.lib.metrics import (IMetric, IncrementNotImplementedError,
+                                 TimingNotTImplementedError)
 
 
 class TestDecorator(TestCase):
@@ -157,3 +160,28 @@ class TestDecoratorExceptions(TestCase):
         # act
         with self.env_with_slack:
             self.assertRaises(TestDecoratorExceptions.CustomException, A().process)
+
+
+class TestDecoratorIMetricExceptions(TestCase):
+    """Defines tests for @observe use-cases where IMetric was used incorrect
+    """
+
+    def test_observe_raises_on_metric_interface_incorrect_use(self):
+        """This is an example of how a user can define their own metric client.
+        Note:
+            In this case, the interface ws used directly, you need to implement the actual methods.
+        """
+        # arrange class, implements metric wrong
+        class A:
+            def __init__(self):
+                self.metric = IMetric()
+
+            @observe(metric="my_metric")
+            def process(self, message: Dict[str, Any]) -> Dict[str, Any]:
+                return message
+
+        kwargs = {
+            "message": {"HelloWorld": True}
+        }
+        # act
+        self.assertRaises((TimingNotTImplementedError, IncrementNotImplementedError), A().process, **kwargs)

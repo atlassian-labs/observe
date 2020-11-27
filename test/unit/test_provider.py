@@ -107,6 +107,8 @@ class TestProviderGetSlack(TestCase):
 
 
 class TestProviderGetMetric(TestCase):
+    """Defines tests for the Provider.get_metric staticmethod.
+    """
 
     def test_when_args_are_falsy(self):
 

@@ -11,6 +11,41 @@ class TestDecorator(TestCase):
     """Defines tests for @observe use-cases with basic setup.
     """
 
+    def test_wraps_function_accepts_args_kwargs(self):
+        """Test where @observe wraps a function which accepts *args, **kwargs.
+        """
+        # arrange, @observe args, kwargs
+        @observe(metric="your_metric")
+        def process(*args, **kwargs):
+            pass
+        # act, assert, assertion provided by no exception
+        process(1, 2, 3, name="observe", message={})
+
+    def test_wraps_function_no_args_no_kwargs(self):
+        """Test where @observe wraps a function, no args, no kwargs.
+        """
+        # arrange, @observe args, kwargs
+        @observe(metric="your_metric")
+        def process():
+            pass
+        # act, assert, assertion provided by no exception
+        process()
+
+    def test_wraps_method_kwargs(self):
+        """Test where @observe wraps a method, which did not get any args, kwargs.
+
+        Note:
+            The only arg is the class itself
+        """
+        # arrange, @observe args, kwargs
+        class A:
+            @observe(metric="your_metric")
+            def process(self):
+                pass
+
+        # act, assert, assertion provided by no exception
+        A().process()
+
     def test_wraps_function(self):
         """Test where @observe wraps a function.
         """

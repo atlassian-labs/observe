@@ -65,10 +65,18 @@ class Provider:
 
 
 class Resolver:
-
+    """The Resolver provides methods used to process parameter passed to the @observe decorater.
+    """
     @staticmethod
     def resolve_tags_from(tags_from: Optional[Dict[str, List[str]]], **kwargs: Any) -> List[str]:  # pylint: disable=E1136
+        """This methods helps to identify and create tags from **kwargs dictionaries based on 'tags_from' setup.
 
+        Args:
+            tags_from (Optional[Dict[str, List[str]]]): this is the actual `tags_from` argument from @observe decoration.
+
+        Returns:
+            List[str]: a list of tags if found any, else empty list
+        """
         # initialize default empty list
         tags: List[str] = []
 

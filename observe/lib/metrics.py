@@ -5,6 +5,16 @@ from typing import Any, List, Optional, Text
 from datadog import DogStatsd
 
 
+class TimingNotTImplementedError(NotImplementedError):
+    """[summary]
+    """
+
+
+class IncrementNotImplementedError(NotImplementedError):
+    """[summary]
+    """
+
+
 class IMetric:
     """This interface defines methods the @observe decorator is going to call, it is a sub-set of DogStatsd.
     """
@@ -17,7 +27,7 @@ class IMetric:
             sample_rate: Optional[float] = None) -> Any:  # pylint: disable=E1136
         """Record the timing value for the metric, appends tags.
         """
-        raise NotImplementedError("%s: the method is not implemented." % self.__class__.__name__)
+        raise TimingNotTImplementedError("%s: the method is not implemented." % self.__class__.__name__)
 
     def increment(
             self,
@@ -27,7 +37,7 @@ class IMetric:
             sample_rate: Optional[float] = None) -> Any:  # pylint: disable=E1136
         """Increment the metric by the provided value, appends tags.
         """
-        raise NotImplementedError("%s: the method is not implemented." % self.__class__.__name__)
+        raise IncrementNotImplementedError("%s: the method is not implemented." % self.__class__.__name__)
 
 
 class Metric(DogStatsd, IMetric):

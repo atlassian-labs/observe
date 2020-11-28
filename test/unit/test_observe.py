@@ -1,15 +1,53 @@
 """Defines tests for the @observe decorator.
 """
+from typing import Any, Dict
 from unittest import TestCase
 
 from mock import Mock, patch
 
 from observe.decorator import observe
+from observe.lib.metrics import (IMetric, IncrementNotImplementedError,
+                                 TimingNotTImplementedError)
 
 
 class TestDecorator(TestCase):
     """Defines tests for @observe use-cases with basic setup.
     """
+
+    def test_wraps_function_accepts_args_kwargs(self):
+        """Test where @observe wraps a function which accepts *args, **kwargs.
+        """
+        # arrange, @observe args, kwargs
+        @observe(metric="your_metric")
+        def process(*args, **kwargs):
+            pass
+        # act, assert, assertion provided by no exception
+        process(1, 2, 3, name="observe", message={})
+
+    def test_wraps_function_no_args_no_kwargs(self):
+        """Test where @observe wraps a function, no args, no kwargs.
+        """
+        # arrange, @observe args, kwargs
+        @observe(metric="your_metric")
+        def process():
+            pass
+        # act, assert, assertion provided by no exception
+        process()
+
+    def test_wraps_method_kwargs(self):
+        """Test where @observe wraps a method, which did not get any args, kwargs.
+
+        Note:
+            The only arg is the class itself
+        """
+        # arrange, @observe args, kwargs
+        class A:
+            @observe(metric="your_metric")
+            def process(self):
+                pass
+
+        # act, assert, assertion provided by no exception
+        A().process()
 
     def test_wraps_function(self):
         """Test where @observe wraps a function.
@@ -122,3 +160,28 @@ class TestDecoratorExceptions(TestCase):
         # act
         with self.env_with_slack:
             self.assertRaises(TestDecoratorExceptions.CustomException, A().process)
+
+
+class TestDecoratorIMetricExceptions(TestCase):
+    """Defines tests for @observe use-cases where IMetric was used incorrect
+    """
+
+    def test_observe_raises_on_metric_interface_incorrect_use(self):
+        """This is an example of how a user can define their own metric client.
+        Note:
+            In this case, the interface ws used directly, you need to implement the actual methods.
+        """
+        # arrange class, implements metric wrong
+        class A:
+            def __init__(self):
+                self.metric = IMetric()
+
+            @observe(metric="my_metric")
+            def process(self, message: Dict[str, Any]) -> Dict[str, Any]:
+                return message
+
+        kwargs = {
+            "message": {"HelloWorld": True}
+        }
+        # act
+        self.assertRaises((TimingNotTImplementedError, IncrementNotImplementedError), A().process, **kwargs)

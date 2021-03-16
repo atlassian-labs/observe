@@ -203,3 +203,80 @@ class TestResolverTagsFromFoundPartially(TestCase):
         tags = Resolver.resolve_tags_from(tags_from={"message": ["type", "schema", {"payload": ["name"]}]}, **my_kwargs)
         # assert
         self.assertEqual(tags, ["type:this_is_the_event_type_from_message", "schema:this_is_the_event_schema_from_message"])
+
+
+class TestResolverTraceIdFromEmpty(TestCase):
+
+    def test_trace_id_returns_empty_string(self):
+
+        trace_id = Resolver.resolve_trace_id(trace_id_from=None)
+        self.assertEqual(trace_id, "")
+
+        trace_id = Resolver.resolve_trace_id(trace_id_from=1337)
+        self.assertEqual(trace_id, "")
+
+        trace_id = Resolver.resolve_trace_id(trace_id_from="")
+        self.assertEqual(trace_id, "")
+
+        trace_id = Resolver.resolve_trace_id(trace_id_from={})
+        self.assertEqual(trace_id, "")
+
+        trace_id = Resolver.resolve_trace_id(trace_id_from=[])
+        self.assertEqual(trace_id, "")
+
+        trace_id = Resolver.resolve_trace_id(trace_id_from={"message": "eventId"})
+        self.assertEqual(trace_id, "")
+
+
+class TestResolverTraceIdFromDict(TestCase):
+
+    def test_trace_id_returns_value(self):
+
+        kwargs = {
+            "message": {
+                "eventId": "aaaa-1111-bbbb-2222-cccc"
+            }
+        }
+
+        trace_id = Resolver.resolve_trace_id(trace_id_from={"message": "eventId"}, **kwargs)
+        self.assertEqual(trace_id, "aaaa-1111-bbbb-2222-cccc")
+
+
+class TestResolverIdentity(TestCase):
+
+    def test_identity_default(self):
+        # act
+        identity = Resolver.resolve_identity(func=None, trace_id="abcd")
+        # assert
+        self.assertEqual(identity, "observe(abcd)")
+
+    def test_identity_from_function(self):
+        # arrange args
+        def process_function():
+            pass
+        # act
+        identity = Resolver.resolve_identity(func=process_function)
+        # assert
+        self.assertEqual(identity, "process_function()")
+
+    def test_identity_from_class(self):
+        # arrange
+        class MainProcess:
+            def start(self):
+                pass
+        # act
+        identity = Resolver.resolve_identity(MainProcess(), func=None)
+        # assert
+        self.assertEqual(identity, "MainProcess()")
+
+    def test_identity_from_class_identity(self):
+        # arrange
+        class MainProcess:
+            identity = "Valheim"
+
+            def start(self):
+                pass
+        # act
+        identity = Resolver.resolve_identity(MainProcess(), func=None)
+        # assert
+        self.assertEqual(identity, "Valheim()")

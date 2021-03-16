@@ -11,38 +11,34 @@ import traceback
 from functools import wraps
 from typing import Any, Callable, Dict, List, Optional
 
-from observe.lib.utils import Provider
+from observe.lib.utils import Provider, Resolver
 
 
 def observe(metric: str,
-            accept_on: Optional[List[Exception]] = None,  # pylint: disable=E1136
-            decline_on: Optional[List[Exception]] = None,  # pylint: disable=E1136
-            static_tags: Optional[List[str]] = None,  # pylint: disable=E1136
+            accept_on: List[Exception] = [],  # pylint: disable=E1136
+            decline_on: List[Exception] = [],  # pylint: disable=E1136
+            static_tags: List[str] = [],  # pylint: disable=E1136
             tags_from: Optional[Dict[str, List[str]]] = None,  # pylint: disable=E1136
-            trace_id_from: Optional[Dict[str, str]] = None,  # pylint: disable=E1136
-            verbose: bool = False):
-    """[summary]
+            trace_id_from: Optional[Dict[str, str]] = None):  # pylint: disable=E1136
+    """This operator will, based on the provided setup generate logs, metrics, notifications on each call for that execution.
 
     Args:
-        metric (str): [description]
-        accept_on (Optional[List[Exception]], optional): [description]. Defaults to None.
-        decline_on (Optional[List[Exception]], optional): [description]. Defaults to None.
-        static_tags (Optional[List[str]], optional): [description]. Defaults to None.
-        tags_from (Optional[Dict[str, List[str]]], optional): [description]. Defaults to None.
-        trace_id_from (Optional[Dict[str, str]], optional): [description]. Defaults to None.
-        verbose (bool, optional): [description]. Defaults to False.
+        metric (str): The root-metric which will be updated during execution in e.g. DogStatsd.
+        accept_on (Optional[List[Exception]], optional): A list of exceptions on which the message will be acknowledged.
+        decline_on (Optional[List[Exception]], optional): A list of exceptions on which the message will be declined.
+        static_tags (Optional[List[str]], optional): A list of tags to be appended on each metric update.
+        tags_from (Optional[Dict[str, List[str]]], optional): A list of tags to be dynamically extracted from the key dictionary.
+        trace_id_from (Optional[Dict[str, str]], optional): A trace_id to be appended on each log from the key dictionary.
     """
-    # resolve
-    accept_on = accept_on or []
-    decline_on = decline_on or []
-    static_tags = static_tags or []
-
     def arrange(func: Callable[..., Any]):
         @wraps(func)
         def inner(*args: Any, **kwargs: Any) -> Any:
-            # setup
-            identity: Optional[str] = None  # pylint: disable=E1136
-            all_tags: List[str] = []
+
+            # setup tracing and tags
+            trace_id = Resolver.resolve_trace_id(trace_id_from=trace_id_from, **kwargs)
+            identity = Resolver.resolve_identity(*args, func=func, trace_id=trace_id)
+            additional_tags = Resolver.resolve_tags_from(tags_from=tags_from, **kwargs)
+            all_tags = additional_tags + static_tags
 
             imetric = Provider.get_metric(*args)
 

@@ -69,14 +69,14 @@ class Resolver:
     """
 
     @staticmethod
-    def _get_str_value(key: str, message: Dict[str, Any]) -> Union[str, None]: # pylint: disable=E1136
+    def _get_str_value(key: str, message: Dict[str, Any]) -> Union[str, None]:  # pylint: disable=E1136
         value = message.get(str(key))
         if isinstance(value, str):
             return value
         return None
 
     @staticmethod
-    def resolve_identity(*args: Any, func: Any, trace_id: Optional[str] = "") -> str: # pylint: disable=E1136
+    def resolve_identity(*args: Any, func: Any, trace_id: Optional[str] = "") -> str:  # pylint: disable=E1136
 
         identity = "observe(%s)" % trace_id
 
@@ -148,7 +148,7 @@ class Resolver:
         return tags
 
     @staticmethod
-    def resolve_trace_id(trace_id_from: Optional[Dict[str, str]], **kwargs: Any) -> str: # pylint: disable=E1136
+    def resolve_trace_id(trace_id_from: Optional[Dict[str, str]], **kwargs: Any) -> str:  # pylint: disable=E1136
         """This method attempts to get a trace_id from **kwargs dictionaries based on 'trace_id_from' setup.
 
         Args:

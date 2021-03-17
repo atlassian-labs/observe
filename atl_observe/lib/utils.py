@@ -5,9 +5,9 @@ from typing import Any, Dict, List, Optional, Union
 
 from datadog.dogstatsd.base import DogStatsd
 
-from observe.lib.logger import Logger
-from observe.lib.metrics import IMetric, Metric
-from observe.lib.slack import MissingSlackWebhookException, Slack
+from atl_observe.lib.logger import Logger
+from atl_observe.lib.metrics import IMetric, Metric
+from atl_observe.lib.slack import MissingSlackWebhookException, Slack
 
 
 class Provider:

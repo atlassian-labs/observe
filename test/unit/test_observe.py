@@ -74,6 +74,55 @@ class TestDecorator(TestCase):
         A().process(message={})
 
 
+class TestDecoratorLoaded(TestCase):
+    """Defines tests for @observe use-cases with loaded setup.
+    """
+
+    def setUp(self) -> None:
+        self.message = {
+            "eventId": "1234-4321-abcd-dcba",
+            "schema": "my_schema",
+            "type": "my_type",
+            "ingestionSource": "my_source",
+            "payload": {
+                "field_a": True,
+            }
+        }
+
+    def test_loaded_function(self):
+
+        # arrange function
+        @observe(metric="function",
+                 accept_on=[],
+                 decline_on=[Exception],
+                 static_tags=["test:loaded", "test:function"],
+                 tags_from={"message": ["type", "schema", "ingestionSource"]},
+                 trace_id_from={"message": "eventId"})
+        def my_function(message: Dict[str, Any]):
+            raise Exception("MyFunctionRaised")
+
+        # act, assertion provided by no exception
+        my_function(message=self.message)
+
+    def test_loaded_method(self):
+
+        # arrange class
+        class MyClass:
+            identity = "PewPew"
+
+            @observe(metric="method",
+                     accept_on=[],
+                     decline_on=[Exception],
+                     static_tags=["test:loaded", "test:function"],
+                     tags_from={"message": ["type", "schema", "ingestionSource"]},
+                     trace_id_from={"message": "eventId"})
+            def my_method(self, message: Dict[str, Any]):
+                raise Exception("MyMethodRaised")
+
+        # act, assertion provided by no exception
+        MyClass().my_method(message=self.message)
+
+
 class TestDecoratorExceptions(TestCase):
     """Defines tests for @observe use-cases with accept_on, decline_on setup.
     """

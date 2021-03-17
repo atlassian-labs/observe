@@ -67,6 +67,39 @@ class Provider:
 class Resolver:
     """The Resolver provides methods used to process parameter passed to the @observe decorater.
     """
+
+    @staticmethod
+    def _get_str_value(key: str, message: Dict[str, Any]) -> Union[str, None]:  # pylint: disable=E1136
+        value = message.get(str(key))
+        if isinstance(value, str):
+            return value
+        return None
+
+    @staticmethod
+    def resolve_identity(*args: Any, func: Any, trace_id: Optional[str] = "") -> str:  # pylint: disable=E1136
+
+        identity = "observe(%s)" % trace_id
+
+        try:
+            identity = "%s(%s)" % (args[0].identity, trace_id)
+            return identity
+        except Exception:
+            pass
+
+        try:
+            identity = "%s(%s)" % (args[0].__class__.__name__, trace_id)
+            return identity
+        except Exception:
+            pass
+
+        try:
+            identity = "%s(%s)" % (func.__name__, trace_id)
+            return identity
+        except Exception:
+            pass
+
+        return identity
+
     @staticmethod
     def resolve_tags_from(tags_from: Optional[Dict[str, List[str]]], **kwargs: Any) -> List[str]:  # pylint: disable=E1136
         """This methods helps to identify and create tags from **kwargs dictionaries based on 'tags_from' setup.
@@ -89,31 +122,54 @@ class Resolver:
         for lookup_key, tags_keys in tags_from.items():
 
             # ensure we work with types, we expected to get
-            if not isinstance(lookup_key, str) or not isinstance(tags_keys, list):
+            if not isinstance(tags_keys, list):
                 continue
 
             # try to get the message from kwargs
-            message = kwargs.get(lookup_key)
+            message = kwargs.get(str(lookup_key))
 
             # ensure the message was available, and is a dictionary
-            if not message or not isinstance(message, dict):
+            if not isinstance(message, dict):
                 continue
 
             # iterate all tags we supposed to find
             for tag_key in tags_keys:
 
-                # ensure we work with types, we expected to get
-                if not isinstance(tag_key, str):
-                    continue
-
                 # check if the tag was in the message
-                tag_value = message.get(tag_key)
+                tag_value = Resolver._get_str_value(key=tag_key, message=message)
 
                 # ensure we did get a value and the value is a string
-                if not tag_value or not isinstance(tag_value, str):
+                if not tag_value:
                     continue
 
                 # create the tag and append
                 tags.append("%s:%s" % (tag_key, tag_value))
 
         return tags
+
+    @staticmethod
+    def resolve_trace_id(trace_id_from: Optional[Dict[str, str]], **kwargs: Any) -> str:  # pylint: disable=E1136
+        """This method attempts to get a trace_id from **kwargs dictionaries based on 'trace_id_from' setup.
+
+        Args:
+            trace_id_from (Optional[Dict[str, str]]): contains the keyword and the field to be used.
+
+        Returns:
+            str: [description]
+        """
+        trace_id = ""
+
+        if not isinstance(trace_id_from, dict):
+            return trace_id
+
+        for key, value in trace_id_from.items():
+            try:
+                # try to get the message from kwargs
+                message = kwargs.get(str(key))
+                trace_id = Resolver._get_str_value(key=value, message=message)
+                if trace_id:
+                    return trace_id
+            except Exception:
+                pass
+
+        return trace_id

@@ -5,7 +5,7 @@ from unittest import TestCase
 from datadog import DogStatsd
 from mock import patch
 
-from observe.lib.metrics import IMetric, Metric
+from atl_observe.lib.metrics import IMetric, Metric
 
 
 class TestMetricInitialization(TestCase):

@@ -5,7 +5,7 @@ from unittest import TestCase, skipIf
 
 from mock import patch
 
-from observe.lib.slack import MissingSlackWebhookException, Slack
+from atl_observe.lib.slack import MissingSlackWebhookException, Slack
 
 slack_web_hook_required = skipIf(
     condition=bool(not os.environ.get('SLACK_WEB_HOOK')),

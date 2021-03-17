@@ -3,7 +3,7 @@
 
 from unittest import TestCase
 
-from observe.lib.utils import Resolver
+from atl_observe.lib.utils import Resolver
 
 
 class TestResolverTagsFromEmpty(TestCase):

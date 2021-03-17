@@ -14,7 +14,7 @@ else
     path="$1"
 fi
 
-if ! pytest --cov=observe --cov-report=xml -v -s $path; then
+if ! pytest --cov=atl_observe --cov-report=xml -v -s $path; then
     fail=$(($fail + 1))
 fi
 

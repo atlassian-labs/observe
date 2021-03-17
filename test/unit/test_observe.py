@@ -5,9 +5,9 @@ from unittest import TestCase
 
 from mock import Mock, patch
 
-from observe.decorator import observe
-from observe.lib.metrics import (IMetric, IncrementNotImplementedError,
-                                 TimingNotTImplementedError)
+from atl_observe import observe
+from atl_observe.lib.metrics import (IMetric, IncrementNotImplementedError,
+                                     TimingNotTImplementedError)
 
 
 class TestDecorator(TestCase):
@@ -184,7 +184,7 @@ class TestDecoratorExceptions(TestCase):
         # assert
         self.assertEqual(response, False)
 
-    @patch("observe.lib.slack.requests")
+    @patch("atl_observe.lib.slack.requests")
     def test_function_raises(self, requests):
         # arrange patch
         requests.return_value = Mock(status_code=200)
@@ -196,7 +196,7 @@ class TestDecoratorExceptions(TestCase):
         # act
         self.assertRaises(TestDecoratorExceptions.CustomException, process)
 
-    @patch("observe.lib.slack.requests")
+    @patch("atl_observe.lib.slack.requests")
     def test_method_raises(self, requests):
         # arrange patch
         requests.return_value = Mock(status_code=200)

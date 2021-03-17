@@ -6,15 +6,15 @@ fi
 
 source .ve/bin/activate
 
-if ! flake8 "./observe" "./test"; then
+if ! flake8 "./atl_observe" "./test"; then
     fail=$(($fail + 1))
 fi
 
-if ! pylint -E `find ./observe ./test -name '*.py'`; then
+if ! pylint -E `find ./atl_observe ./test -name '*.py'`; then
     fail=$(($fail + 1))
 fi
 
-if ! isort -c `find ./observe ./test -name '*.py'`; then
+if ! isort -c `find ./atl_observe ./test -name '*.py'`; then
     fail=$(($fail + 1))
 fi
 

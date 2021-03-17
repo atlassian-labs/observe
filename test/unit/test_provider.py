@@ -7,10 +7,10 @@ from unittest import TestCase
 from datadog.dogstatsd.base import DogStatsd
 from mock import patch
 
-from observe.lib.logger import Logger as CustomLogger
-from observe.lib.metrics import IMetric, Metric
-from observe.lib.slack import Slack
-from observe.lib.utils import Provider
+from atl_observe import Slack
+from atl_observe.lib.logger import Logger as CustomLogger
+from atl_observe.lib.metrics import IMetric, Metric
+from atl_observe.lib.utils import Provider
 
 
 class TestProviderGetLogger(TestCase):

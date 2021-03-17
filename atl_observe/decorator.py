@@ -11,7 +11,7 @@ import traceback
 from functools import wraps
 from typing import Any, Callable, Dict, List, Optional
 
-from observe.lib.utils import Provider, Resolver
+from atl_observe.lib.utils import Provider, Resolver
 
 
 def observe(metric: str,

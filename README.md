@@ -7,6 +7,40 @@
 
 **@observe** is a decorator for Python methods, which allows Python developers to collect all basic metrics about the decorated method, generate unified logs and notifications on failure which are easy to trace.
 
+
+## Installation
+
+```sh
+pip install atl-observe
+```
+
+## Usage
+Decorating the process method and assigning a metic name and static_tags, all tags are added to all metrics generated, used to filter on your dashboards.
+
+```python
+from atl_observe import observe
+
+class Engine:
+
+    @observe(metric="process",
+             static_tags=["layer:process"])
+    def process(self, message: dict):
+        pass
+```
+
+Decorating the process method and assigning a metric and trace_id_from, the trace_id will now appear in all logs and notifications, used to search your logs.
+
+```python
+from atl_observe import observe
+
+class Engine:
+
+    @observe(metric="process",
+             trace_id_from={"message": "eventId"})
+    def process(self, message: dict):
+        pass
+```
+
 ## Logs, Metrics and Notifications
 
 All logs, metrics and notifications are divided into three categories:
@@ -60,37 +94,6 @@ statsd.increment('%s.exception.raised' % metric, tags=all_tags)
 # timing
 statsd.timing("%s.time.raised" % metric, dt, tags=all_tags)
 ```
-
-## Usage
-Decorating the process method and assigning a metic name and static_tags, all tags are added to all metrics generated, used to filter on your dashboards.
-
-```python
-from observe import observe
-
-class Engine:
-
-    @observe(metric="process",
-             static_tags=["layer:process"])
-    def process(self, message: dict):
-        pass
-```
-
-Decorating the process method and assigning a metric and trace_id_from, the trace_id will now appear in all logs and notifications, used to search your logs.
-
-```python
-from observe import observe
-
-class Engine:
-
-    @observe(metric="process",
-             trace_id_from={"message": "eventId"})
-    def process(self, message: dict):
-        pass
-```
-
-## Installation
-
-`pip install ...`
 
 ## Documentation
 

@@ -24,3 +24,17 @@ compile:
 	($(VENV_RUN); pip install --upgrade pip-tools)
 	# will look for requirements/requirements.in file to compile packages (.txt)
 	($(VENV_RUN); pip-compile-multi)
+
+release_dry:
+	# this will perform a release cycle run whichout changing files,
+	npx standard-version --dry-run
+
+release_as:
+	# this will perform a release cycle run, locking the next version manually
+	./bin/git_next.sh
+	npx standard-version --release-as $(filter-out $@,$(MAKECMDGOALS))
+
+release:
+	# this will perform a release cycle run, auto-determining the next release version
+	./bin/git_next.sh
+	npx standard-version

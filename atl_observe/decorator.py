@@ -9,17 +9,17 @@ categorized into one of the following four categories:
 import time
 import traceback
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Type
 
 from atl_observe.lib.utils import Provider, Resolver
 
 
 def observe(metric: str,
-            accept_on: List[Exception] = [],  # pylint: disable=E1136
-            decline_on: List[Exception] = [],  # pylint: disable=E1136
+            accept_on: List[Type[Exception]] = [],  # pylint: disable=E1136
+            decline_on: List[Type[Exception]] = [],  # pylint: disable=E1136
             static_tags: List[str] = [],  # pylint: disable=E1136
             tags_from: Optional[Dict[str, List[str]]] = None,  # pylint: disable=E1136
-            trace_id_from: Optional[Dict[str, str]] = None):  # pylint: disable=E1136
+            trace_id_from: Optional[Dict[str, str]] = None) -> Any:  # pylint: disable=E1136
     """This operator will, based on the provided setup generate logs, metrics, notifications on each call for that execution.
 
     Args:

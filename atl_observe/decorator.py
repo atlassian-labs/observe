@@ -49,13 +49,22 @@ def observe(metric: str,
                 # actual function execution
                 response: Any = func(*args, **kwargs)
 
+                # calculate process time
+                process_time = int(time.monotonic() - time_start) * 1000
+                # append extra tags
+                all_tags.append(Resolver.resolve_observed_sli_tag(process_time=process_time))
+
                 # send metrics, finished successfully
-                imetric.timing("%s.time.finished" % metric, int(time.monotonic() - time_start) * 1000, all_tags)
+                imetric.timing("%s.time.finished" % metric, process_time, all_tags)
+                imetric.gauge("%s.time_gauge.finished" % metric, process_time, all_tags)
                 imetric.increment("%s.finished" % metric, 1, all_tags)
 
             except Exception as ex:
-                # append exception tags
+                # calculate process time
+                process_time = int(time.monotonic() - time_start) * 1000
+                # append extra tags
                 all_tags.append('exception:%s' % type(ex).__name__)
+                all_tags.append(Resolver.resolve_observed_sli_tag(process_time=process_time))
 
                 # accept on, returns True
                 if type(ex) in accept_on:
@@ -63,9 +72,10 @@ def observe(metric: str,
                     Provider.get_logger(*args).warning("%s: %s(%s) during '%s' accepted.\n%s" % (
                         identity, type(ex).__name__, ex, func.__name__, traceback.format_exc()))
                     # send metrics, raised but accepted
-                    imetric.timing("%s.time.accepted" % metric, int(time.monotonic() - time_start) * 1000, all_tags)
+                    imetric.timing("%s.time.accepted" % metric, process_time, all_tags)
+                    imetric.gauge("%s.time_gauge.accepted" % metric, process_time, all_tags)
                     imetric.increment('%s.exception.accepted' % metric, 1, all_tags)
-                    # return truthy as acknowledged
+                    # return truthy, to be acknowledged
                     return True
 
                 # decline on, returns False
@@ -74,17 +84,21 @@ def observe(metric: str,
                     Provider.get_logger(*args).error("%s: %s(%s) during '%s' declined.\n%s" % (
                         identity, type(ex).__name__, ex, func.__name__, traceback.format_exc()))
                     # send metrics, raised but declined
-                    imetric.timing("%s.time.declined" % metric, int(time.monotonic() - time_start) * 1000, all_tags)
+                    imetric.timing("%s.time.declined" % metric, process_time, all_tags)
+                    imetric.gauge("%s.time_gauge.declined" % metric, process_time, all_tags)
                     imetric.increment('%s.exception.declined' % metric, 1, all_tags)
-                    # return falsy as not acknowledged
+                    # return falsy, not to be acknowledged
                     return False
 
-                # unhandled exception, log
+                # unhandled exception, log error
                 Provider.get_logger(*args).error("%s: %s(%s) during '%s' raised.\n%s" % (
                     identity, type(ex).__name__, ex, func.__name__, traceback.format_exc()))
+
                 # send metrics, raised and unhandled
-                imetric.timing("%s.time.raised" % metric, int(time.monotonic() - time_start) * 1000, all_tags)
+                imetric.timing("%s.time.raised" % metric, process_time, all_tags)
+                imetric.gauge("%s.time_gauge.raised" % metric, process_time, all_tags)
                 imetric.increment('%s.exception.raised' % metric, 1, all_tags)
+
                 # check if notification client available
                 slack = Provider.get_slack(*args)
                 if slack:

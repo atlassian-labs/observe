@@ -9,6 +9,34 @@ from atl_observe.lib.logger import Logger
 from atl_observe.lib.metrics import IMetric, Metric
 from atl_observe.lib.slack import MissingSlackWebhookException, Slack
 
+# mapping milliseconds to tag
+observe_threshold_map: Dict[int, str] = {
+    0: "100ms",
+    100: "200ms",
+    200: "300ms",
+    300: "400ms",
+    400: "500ms",
+    500: "1s",
+    1000: "2s",
+    2000: "3s",
+    3000: "4s",
+    4000: "5s",
+    5000: "10s",
+    10000: "20s",
+    20000: "30s",
+    30000: "40s",
+    40000: "50s",
+    50000: "1min",
+    60000: "2min",
+    120000: "3min",
+    180000: "4min",
+    240000: "5min",
+    300000: "10min",
+    600000: "20min",
+    1200000: "30min",
+    1800000: "OVER_30min"
+}
+
 
 class Provider:
     """The Provider defines methods to find a client or default to one.
@@ -173,3 +201,27 @@ class Resolver:
                 pass
 
         return trace_id
+
+    @staticmethod
+    def resolve_observed_sli_tag(process_time: int, threshold_map: Dict[int, str] = observe_threshold_map) -> str:  # pylint: disable=E1136
+        """This method returns an `observed_sli` tag based on the processing time (ms) provided.
+
+        Args:
+            process_time (int): the measured processing time in ms.
+            threshold_map (Dict[int, str], optional): a map with defined thresholds. Defaults to observe_threshold_map.
+
+        Returns:
+            str: `observed_sli:[tag]`
+        """
+        # set the current value to fastest threshold
+        current_value = threshold_map[0]
+        # iterate the hash map
+        for key, value in threshold_map.items():
+            # if the processing time is smaller or equal to the value in the hashmap
+            if process_time <= key:
+                # return the current value
+                return "observed_sli:%s" % current_value
+            # update the current value
+            current_value = value
+        # return the last updated current value (slowest threshold)
+        return "observed_sli:%s" % current_value

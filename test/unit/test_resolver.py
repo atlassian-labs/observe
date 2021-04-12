@@ -3,7 +3,7 @@
 
 from unittest import TestCase
 
-from atl_observe.lib.utils import Resolver
+from atl_observe.lib.utils import Resolver, observe_threshold_map
 
 
 class TestResolverTagsFromEmpty(TestCase):
@@ -280,3 +280,50 @@ class TestResolverIdentity(TestCase):
         identity = Resolver.resolve_identity(MainProcess(), func=None)
         # assert
         self.assertEqual(identity, "Valheim()")
+
+
+class TestResolverSLITag(TestCase):
+
+    def test_threshold_1ms(self):
+        """This tests that the first value of the threshold map is returned correctly.
+        """
+        # arrange
+        process_time = 1
+        # act
+        tag = Resolver.resolve_observed_sli_tag(process_time=process_time)
+        # assert
+        self.assertEqual(tag, "observed_sli:100ms")
+
+    def test_threshold_100ms(self):
+        """This tests that the first value of the threshold map is returned correctly, at the edge to the second value.
+        """
+        # arrange
+        process_time = 100
+        # act
+        tag = Resolver.resolve_observed_sli_tag(process_time=process_time)
+        # assert
+        self.assertEqual(tag, "observed_sli:100ms")
+
+    def test_threshold_map(self):
+        """This tests the whole algorithm to obtain tags, excluding last value.
+        """
+        timings = list(observe_threshold_map.keys())
+        expected_tags = list(observe_threshold_map.values())
+        for i, process_time in enumerate(timings):
+            tag = Resolver.resolve_observed_sli_tag(process_time=process_time)
+
+            if i == 0:
+                self.assertEqual(tag, "observed_sli:%s" % (expected_tags[i]))
+            else:
+                # return always the last value of the current match
+                self.assertEqual(tag, "observed_sli:%s" % (expected_tags[i - 1]))
+
+    def test_threshold_1800001ms(self):
+        """This tests that the last value of the threshold map is returns correctly.
+        """
+        # arrange
+        process_time = 1800001
+        # act
+        tag = Resolver.resolve_observed_sli_tag(process_time=process_time)
+        # assert
+        self.assertEqual(tag, "observed_sli:OVER_30min")

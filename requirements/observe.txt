@@ -5,19 +5,19 @@
 #
 #    pip-compile-multi
 #
-certifi==2020.12.5
+certifi==2026.7.22
     # via requests
-chardet==4.0.0
+charset-normalizer==3.5.1
     # via requests
 datadog==0.40.1
-    # via -r requirements/observe.in
+    # via -r observe.in
 decorator==4.4.2
     # via datadog
 idna==2.10
     # via requests
-requests==2.25.1
+requests==2.33.0
     # via
-    #   -r requirements/observe.in
+    #   -r observe.in
     #   datadog
 urllib3==1.26.4
     # via requests

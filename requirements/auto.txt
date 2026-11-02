@@ -5,33 +5,33 @@
 #
 #    pip-compile-multi
 #
-astroid==2.5.1
+astroid==4.0.4
     # via pylint
 autopep8==1.5.6
-    # via -r requirements/auto.in
+    # via -r auto.in
+dill==0.4.1
+    # via pylint
 flake8==3.9.0
-    # via -r requirements/auto.in
+    # via -r auto.in
 isort==5.8.0
     # via
-    #   -r requirements/auto.in
+    #   -r auto.in
     #   pylint
-lazy-object-proxy==1.6.0
-    # via astroid
 mccabe==0.6.1
     # via
     #   flake8
     #   pylint
+platformdirs==4.14.3
+    # via pylint
 pycodestyle==2.7.0
     # via
     #   autopep8
     #   flake8
 pyflakes==2.3.0
     # via flake8
-pylint==2.7.2
-    # via -r requirements/auto.in
+pylint==4.0.9
+    # via -r auto.in
 toml==0.10.2
-    # via
-    #   autopep8
-    #   pylint
-wrapt==1.12.1
-    # via astroid
+    # via autopep8
+tomlkit==0.15.2
+    # via pylint
